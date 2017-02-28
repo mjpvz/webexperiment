@@ -1,9 +1,10 @@
-var curTrial = 0;
+var curTrial = -1;
 var viewport_vh = 0.98;
 var viewport_vw = 0.72;
 
 //temporarty way to acces stimuli, just for testing. 
-var stimuli = ['http://www.getty.edu/museum/media/images/web/enlarge/00066001.jpg',
+var stimuli = ['https://upload.wikimedia.org/wikipedia/commons/4/4e/Pleiades_large.jpg',
+              'http://www.getty.edu/museum/media/images/web/enlarge/00066001.jpg',
               'http://www.getty.edu/museum/media/images/web/enlarge/00055301.jpg',
               'http://www.getty.edu/museum/media/images/web/enlarge/00066301.jpg',
               'http://www.getty.edu/museum/media/images/web/enlarge/00066001.jpg',
@@ -29,6 +30,7 @@ function ShowBetweenTrials(firstCall) {
   // If it's the first time this funciton is called, that means that trialholder 
   // does not exist yet, and thus cant be removed either.
 if (firstCall != 1) {
+returnData()
 var element = document.getElementById('trialholder');
 element.parentNode.removeChild(element);
 var element = document.getElementById('image_holder');
@@ -41,14 +43,53 @@ var trialnum = curTrial;
 <div id="betweentrials" style="margin:15px">
     <p>Continue to the next trial</p>
     <button id="next"type="button" onclick="RunTrial()">Submit</button> 
-    <p> Trial ${trialnum} of ${stimuli.length} </p>
+    <p> Trial ${trialnum+1} of ${stimuli.length} </p>
 </div>
     `) }
+
+var clicks = [];
+function Coords(event) {
+    var x = event.clientX;
+    var y = event.clientY;
+    var coords = "X coords: " + x + ", Y coords: " + y;
+
+    $('#image_holder').append(`<div id="x${clicks.length}" style="color:red">X</div>`)
+
+    var d = document.getElementById(`x${clicks.length}`);
+    d.style.position = "absolute";
+    d.style.left = x+'px';
+    d.style.top = y+'px';
+    click = [x,y]
+    clicks.push(click)
+    console.log(clicks)
+
+    if(clicks.length > 1) {
+      var x_1 = clicks[clicks.length-1][0]
+      var x_2 = clicks[clicks.length][0]
+      var y_1 = clicks[clicks.length-1][0]
+      var y_2 = clicks[clicks.length][0]
+
+    }
+    
+
+
+
+    // document.getElementById("demo").innerHTML = coords;
+
+}
+
 
  function RunTrial() {
   var element = document.getElementById('betweentrials');
   element.parentNode.removeChild(element);
   Trial();
+}
+
+
+function returnData() {
+    form_data_holder = $(`#trialholder`);
+    var a = form_data_holder
+    console.log(a)
 }
 
 
@@ -58,7 +99,7 @@ function Trial() {
   //generate the html code
    $('#right_wrapper').append(`
     <div id="image_holder">
-      <img id="image" onload="resize_image()">
+      <img id="image" onload="resize_image()" onclick="Coords(event)" align="middle">
     </div>`)   
     document.getElementById('image').src = stimuli[curTrial];
    
@@ -80,30 +121,24 @@ function Trial() {
  function resize_image(targetImage) {
      var targetImage = document.getElementById('image');
 // present the image at the desired size
-      var margin = 0.95; //I want 2.5% of the window empty as a margin. 
       var targetImageHeight = targetImage.height;// image
       var targetImageWidth = targetImage.width; //
-      var windowHeight = $(window).height()*viewport_vh;   //   browser 
-      var windowWidth  = $(window).width()*viewport_vw;   //
-      console.log(targetImageHeight)
-      console.log(targetImageWidth)
-      console.log(windowHeight)
-      console.log(windowWidth)
-      var ratio = Math.min(windowWidth / targetImageWidth, windowHeight / targetImageHeight);
-      console.log(ratio)
-      if (ratio < 1) {
+
+      var actualWindowHeight = $(image_holder).height()
+      var actualWindowWidth = $(image_holder).width()
+ 
+      var ratio = Math.min(actualWindowWidth / targetImageWidth, actualWindowHeight / targetImageHeight);
+
+     if (ratio < 1) {
         console.log('resizing')
-        targetImageHeight = targetImageHeight*ratio*margin;
-        targetImageWidth = targetImageWidth*ratio*margin;
+        targetImageHeight = targetImageHeight*ratio;
+        targetImageWidth = targetImageWidth*ratio;
         targetImage.style.width = `${targetImageWidth}px`;
         targetImage.style.height= `${targetImageHeight}px`;
       }
-      else  {
-        // do nothing
+      else { //no resiznig required
       }
-        //now check where the UI will be placed (to the right if there's enough space, otherwise below)
-        // But there's no UI yet, so yea..nothing to show 
-        return [windowWidth,targetImageWidth]
+    
   }
 
 
