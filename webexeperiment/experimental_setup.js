@@ -1,5 +1,6 @@
-
 var curTrial = 0;
+var viewport_vh = 0.98;
+var viewport_vw = 0.72;
 
 //temporarty way to acces stimuli, just for testing. 
 var stimuli = ['http://www.getty.edu/museum/media/images/web/enlarge/00066001.jpg',
@@ -30,11 +31,14 @@ function ShowBetweenTrials(firstCall) {
 if (firstCall != 1) {
 var element = document.getElementById('trialholder');
 element.parentNode.removeChild(element);
+var element = document.getElementById('image_holder');
+element.parentNode.removeChild(element);
+
 }
 
 var trialnum = curTrial;
- $('#location').append(`
-<div id="betweentrials">
+ $('#left_wrapper').append(`
+<div id="betweentrials" style="margin:15px">
     <p>Continue to the next trial</p>
     <button id="next"type="button" onclick="RunTrial()">Submit</button> 
     <p> Trial ${trialnum} of ${stimuli.length} </p>
@@ -51,55 +55,83 @@ function Trial() {
 	curTrial = increase(curTrial);
 
   //generate the html code
-   $('#location').append(`
-   <div id="trialholder"> 
-    <img id="image"> 
-   </div>`)
+   $('#right_wrapper').append(`
+    <div id="image_holder">
+      <img id="image">
+    </div>`)
 
     // present the image 
-    var targetImage = document.getElementById('image')
-    targetImage.src =  stimuli[curTrial];
+    document.getElementById('image').src.onload = resize_image(document.getElementById('image'))
+    document.getElementById('image').src = stimuli[curTrial];
+    // var targetImage = document.getElementById('image')
+    // targetImage.src =  stimuli[curTrial];
 
-      // present the image at the desired size
-      var margin = 0.95; //I want 2.5% of the window empty as a margin. 
+    
+    
+
+    
+    
+
       
+    if (windowWidth-targetImageWidth >= 5) { 
+      console.log('appending trialholder to left_wrapper')
+      $('#left_wrapper').append(`
+      <div id="trialholder" style="margin:15px">
+          <form>
+              Question 1:<br>
+              <input type="text" name="firstname" value="answer"><br>
+              Question 2:<br>
+              <input type="text" name="lastname" value="answer">
+              <br><br>
+              <button id="continue" type="button" onclick="ShowBetweenTrials()"> Continue </button>
+          </form>
+        </div>`)
+        }
+        // else {
+        
+        //   document.getElementById("trialholder").setAttribute("align", "center");
+        //   //this is pretty much a placeholder till i know the actual data i wanna gather 
+        //   $('#trialholder').append(`
+        //       <form >
+        //           Question 1:<br>
+        //           <input type="text" name="firstname" value="answer"><br>
+        //           Question 2:<br>
+        //           <input type="text" name="lastname" value="answer">
+        //           <br><br>
+        //           <button id="continue" type="button" onclick="ShowBetweenTrials()"> Continue </button>
+        //       </form>`) } 
+
+
+        }
+  
+ function resize_image(targetImage) {
+
+// present the image at the desired size
+      var margin = 0.95; //I want 2.5% of the window empty as a margin. 
       var targetImageHeight = targetImage.height;// image
       var targetImageWidth = targetImage.width; //
-      var windowHeight = $(window).height();   //   browser 
-      var windowWidth  = $(window).width();   //
+      var windowHeight = $(window).height()*viewport_vh;   //   browser 
+      var windowWidth  = $(window).width()*viewport_vw;   //
+      console.log(targetImageHeight)
+      console.log(targetImageWidth)
+      console.log(windowHeight)
+      console.log(windowWidth)
       var ratio = Math.min(windowWidth / targetImageWidth, windowHeight / targetImageHeight);
-
+      console.log(ratio)
       if (ratio < 1) {
+        console.log('resizing')
         targetImageHeight = targetImageHeight*ratio*margin;
         targetImageWidth = targetImageWidth*ratio*margin;
         targetImage.style.width = `${targetImageWidth}px`;
         targetImage.style.height= `${targetImageHeight}px`;
       }
-
+      else  {
+        // do nothing
+      }
         //now check where the UI will be placed (to the right if there's enough space, otherwise below)
-        // But there's no UI yet, so yea..nothing to show
-
-        /*if (windowWidth-targetImageWidth >= 400) {  //400 is an arbitrary number. I don't know the size of the UI yet.
-          
-        }
-        else {
-        } */
-          document.getElementById("trialholder").setAttribute("align", "center");
-          //this is pretty much a placeholder till i know the actual data i wanna gather 
-          $('#trialholder').append(`
-              <form >
-                  Question 1:<br>
-                  <input type="text" name="firstname" value="answer"><br>
-                  Question 2:<br>
-                  <input type="text" name="lastname" value="answer">
-                  <br><br>
-                  <button id="continue" type="button" onclick="ShowBetweenTrials()"> Continue </button>
-              </form>`)
-
-
-        }
-  
-     
+        // But there's no UI yet, so yea..nothing to show 
+        return [windowWidth,targetImageWidth]
+  }
 
 
 

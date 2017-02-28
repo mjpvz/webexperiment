@@ -4,12 +4,13 @@
 <head>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">  </script>
   <script src="experimental_setup.js"> </script>
+
 </head>
 <body>
 
-
+<div id="left_wrapper" style="border:2px solid;width:20vw;height:98vh;float:left" > 
 <!--This is the screen that is shown before anything else. -->
-<div id="instructions">
+<div id="instructions" style="margin:15px">
   <p> Visual perception of <strong>material properties. </strong></p> 
   <button id="start_experiment" type="button" onclick="startexperiment()"> Start The Experiment </button>
   <div id="consentDiv">
@@ -19,10 +20,10 @@
   	and have normal or corrected-to-normal vision.</p>
   </div>
 </div>
+ </div>
 
 
-
-<div id="location">   
+<div id="right_wrapper" style="margin-left:25vw;width:72vw;height:98vh;border:dashed">   
 </div>
 
 </body>
