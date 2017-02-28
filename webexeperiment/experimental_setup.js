@@ -51,30 +51,17 @@ var trialnum = curTrial;
   Trial();
 }
 
+
 function Trial() {
 	curTrial = increase(curTrial);
 
   //generate the html code
    $('#right_wrapper').append(`
     <div id="image_holder">
-      <img id="image">
-    </div>`)
-
-    // present the image 
-    document.getElementById('image').src.onload = resize_image(document.getElementById('image'))
+      <img id="image" onload="resize_image()">
+    </div>`)   
     document.getElementById('image').src = stimuli[curTrial];
-    // var targetImage = document.getElementById('image')
-    // targetImage.src =  stimuli[curTrial];
-
-    
-    
-
-    
-    
-
-      
-    if (windowWidth-targetImageWidth >= 5) { 
-      console.log('appending trialholder to left_wrapper')
+   
       $('#left_wrapper').append(`
       <div id="trialholder" style="margin:15px">
           <form>
@@ -87,25 +74,11 @@ function Trial() {
           </form>
         </div>`)
         }
-        // else {
-        
-        //   document.getElementById("trialholder").setAttribute("align", "center");
-        //   //this is pretty much a placeholder till i know the actual data i wanna gather 
-        //   $('#trialholder').append(`
-        //       <form >
-        //           Question 1:<br>
-        //           <input type="text" name="firstname" value="answer"><br>
-        //           Question 2:<br>
-        //           <input type="text" name="lastname" value="answer">
-        //           <br><br>
-        //           <button id="continue" type="button" onclick="ShowBetweenTrials()"> Continue </button>
-        //       </form>`) } 
+      
 
-
-        }
   
  function resize_image(targetImage) {
-
+     var targetImage = document.getElementById('image');
 // present the image at the desired size
       var margin = 0.95; //I want 2.5% of the window empty as a margin. 
       var targetImageHeight = targetImage.height;// image
