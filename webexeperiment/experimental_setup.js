@@ -19,66 +19,60 @@ De HTML is devided door een left_wrapper en een right_wrapper.
 
 
 // Variable declaration
-var curTrial = -1;
+var curTrial = 1;
 var viewport_vh = 0.98;
 var viewport_vw = 0.72;
-var trialnum = curTrial;
 var clicks = [];
 var margin = 15;
 
 
 //temporarty way to acces stimuli, just for testing. This should refer to a server later on. 
-var stimuli = ['https://upload.wikimedia.org/wikipedia/commons/4/4e/Pleiades_large.jpg', // this image is to large, resize testing
-              'http://www.getty.edu/museum/media/images/web/enlarge/00066001.jpg',
-              'http://www.getty.edu/museum/media/images/web/enlarge/00055301.jpg',
-              'http://www.getty.edu/museum/media/images/web/enlarge/00066301.jpg',
-              'http://www.getty.edu/museum/media/images/web/enlarge/00066001.jpg',
-              'http://www.getty.edu/museum/media/images/web/enlarge/00055301.jpg',
-              'http://www.getty.edu/museum/media/images/web/enlarge/00066301.jpg',
-              'http://www.getty.edu/museum/media/images/web/enlarge/00066001.jpg',
-              'http://www.getty.edu/museum/media/images/web/enlarge/00055301.jpg',
-              'http://www.getty.edu/museum/media/images/web/enlarge/00066301.jpg']
+var stimuli = [ "http://i.imgur.com/y49BVNO.jpg",
+                "http://i.imgur.com/fjJBCS0.jpg",
+                "http://i.imgur.com/U0yjXvk.jpg",
+                "http://i.imgur.com/ouYNcIh.jpg",
+                "http://i.imgur.com/fCcugHt.jpg"]
   
 
 
 /* Start the experiment.
 Remove the instructions, and show the first ShowBetweenTrials screen*/
 function startexperiment() {
-  var element = document.getElementById('instructions');
-  element.parentNode.removeChild(element);
-  ShowBetweenTrials(1)
+  delElement('instructions')
+  ShowBetweenTrials()
 }
 
 // This is shown between every trial
-function ShowBetweenTrials(firstCall) {
+function ShowBetweenTrials() {
+  console.log(curTrial)
     // If it's the first time this funciton is called, that means that trialholder 
     // does not exist yet, and thus cant be removed either.
-  if (firstCall != 1) {
+   if (curTrial != 1) { 
     returnData()
     delElement('trialholder')
     delElement('image_holder')
-
-    // var element = document.getElementById('trialholder'); // deze manier van #trialholder verwijderen doe ik vaker, dus wou
-    //                                                       // hier een functie voor maken, maar dat werkte het niet. Ik denk
-    //                                                       // dat het iets te maken heeft met dat ik verkeerd het element door geef. 
-    // element.parentNode.removeChild(element);              // maar nu werkt het wel. nu snap ik niet meer waarom het niet werkte haha
-    // var element = document.getElementById('image_holder');
-    // element.parentNode.removeChild(element);
-  }
- $('#left_wrapper').append(`
+  } 
+  if (curTrial > stimuli.length) { 
+    // THe end of the experiment has been reached.
+    $('#left_wrapper').append(`
   <div id="betweentrials" style="margin:${margin}px">
-      <p>Continue to the next trial</p>
-      <button id="next"type="button" onclick="RunTrial()">Submit</button> 
-      <p> Trial ${trialnum+1} of ${stimuli.length} </p>
-  </div>
-    `) }
+      <p> You've reached the end of the experiment. Thank you. </p> 
+  </div>`)
+ } 
+ else { console.log(curTrial)
+  $('#left_wrapper').append(`
+    <div id="betweentrials" style="margin:${margin}px">
+        <p>Continue to the next trial</p>
+        <button id="next"type="button" onclick="RunTrial()">Submit</button> 
+        <p> Trial ${curTrial} of ${stimuli.length} </p>
+    </div>
+    `) } }
 
 
 function increase(x) {
     x++;
     return x;
-  }
-
+}
 
  function RunTrial() {
    delElement('betweentrials')
@@ -98,15 +92,19 @@ function Trial() {
         1) the stimuli that is presented in #right_wrapper,
         2) the questions/task that are presented in the left_wrapper */
 
-	curTrial = increase(curTrial);
+	
 
    // Code to contain the stimuli
    $('#right_wrapper').append(`
     <div id="image_holder">
       <img id="image" onload="resize_image()" onclick="Coords(event)" align="middle">
     </div>`)   
-    document.getElementById('image').src = stimuli[curTrial];
-
+    console.log(curTrial)
+    console.log([curTrial-1])
+    console.log(stimuli[curTrial-1])
+    document.getElementById('image').src = stimuli[(curTrial)-1]; // because it randomly saw it was a boolean
+    curTrial = increase(curTrial);
+    console.log(curTrial)
     // This holds the questions/tasks that will be asked/explained 
     $('#left_wrapper').append(`  
     <div id="trialholder" style="margin:${margin}px">
@@ -170,7 +168,7 @@ function Coords(event) {
     } }
   
 
-  function delElement(image_holder) { 
-    var element = document.getElementById(image_holder);
+  function delElement(element) { 
+    var element = document.getElementById(element);
     element.parentNode.removeChild(element);
   }
